@@ -26,6 +26,7 @@ import { Bar, Line } from "react-chartjs-2";
 import "../styles/MetricsContainer.css";
 import { NewMetricAdder } from "./NewMetricAdder";
 import { useEffect, useState } from "react";
+import { addMetric } from "../api";
 
 interface MetricsContainerProps {
   metrics: Metric[];
@@ -97,12 +98,10 @@ export function MetricsContainer(props: MetricsContainerProps) {
               if (type !== "snowQuality") {
                 return (
                   <Line
-                    data={
-                      transformLineMetricsData(
-                        metrics,
-                        MetricType[type as keyof typeof MetricType]
-                      ) as ChartData<"line">
-                    }
+                    data={transformLineMetricsData(
+                      metrics,
+                      MetricType[type as keyof typeof MetricType]
+                    )}
                     options={options}
                     height={400}
                     width={600}
@@ -113,12 +112,7 @@ export function MetricsContainer(props: MetricsContainerProps) {
               } else {
                 return (
                   <Bar
-                    data={
-                      transformBarMetricsData(
-                        metrics,
-                        MetricType.snowQuality
-                      ) as unknown as ChartData<"bar">
-                    }
+                    data={transformBarMetricsData(metrics)}
                     options={{
                       ...options,
                       scales: { x: { type: "category" } },
@@ -134,9 +128,9 @@ export function MetricsContainer(props: MetricsContainerProps) {
           </span>
           <span>
             <NewMetricAdder
-              onSubmit={(newMetric) => {
+              onSubmit={async (newMetric) => {
                 if (newMetric) {
-                  handleSubmit(newMetric);
+                  await handleSubmit(newMetric);
                 }
               }}
             />
@@ -146,10 +140,11 @@ export function MetricsContainer(props: MetricsContainerProps) {
     </>
   );
 
-  function handleSubmit(newMetric: AddableMetric) {
+  async function handleSubmit(newMetric: AddableMetric) {
+    const result = await addMetric(newMetric);
     setMetrics((prevMetrics) => {
       if (prevMetrics) {
-        return [...prevMetrics, { ...newMetric, id: "234234" }];
+        return [...prevMetrics, { ...newMetric, id: result.id }];
       }
     });
   }
@@ -160,11 +155,11 @@ function transformLineMetricsData(metrics: Metric[], metricType: MetricType) {
 
   return {
     labels: metrics.map((metric) => metric.date.toDateString()),
-    datasets: [{ ...dataset, ...graphOptions }] as ChartDataset<"bar">[],
+    datasets: [{ ...dataset, ...graphOptions }] as ChartDataset<"line">[],
   };
 }
 
-function transformBarMetricsData(metrics: Metric[], metricType: MetricType) {
+function transformBarMetricsData(metrics: Metric[]) {
   const data = Object.keys(SnowQuality).map(
     (quality) =>
       metrics.filter((metric) => metric.snowQuality === quality).length

@@ -1,4 +1,4 @@
-import { Metric } from "common/interfaces";
+import { AddableMetric, Metric } from "common/interfaces";
 export const API_URL = "http://localhost:8080";
 
 interface RawMetric {
@@ -6,7 +6,7 @@ interface RawMetric {
   snow_quality: string;
   occupation: number;
   wind_speed: number;
-  created_at: string;
+  date: string;
 }
 export async function getAllMetrics() {
   const result = await (await fetch(`${API_URL}/api/getAllMetrics`)).json();
@@ -16,8 +16,27 @@ export async function getAllMetrics() {
     snowQuality: entry.snow_quality,
     occupation: entry.occupation,
     windSpeed: entry.wind_speed,
-    date: new Date(entry.created_at),
+    date: new Date(entry.date),
   }));
 
   return parsedResult;
+}
+
+export async function addMetric(metric: AddableMetric) {
+  const result = await (
+    await fetch(`${API_URL}/api/addMetric`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        snowQuality: metric.snowQuality,
+        occupation: metric.occupation,
+        windSpeed: metric.windSpeed,
+        date: metric.date.toISOString(),
+      }),
+    })
+  ).json();
+
+  return result;
 }

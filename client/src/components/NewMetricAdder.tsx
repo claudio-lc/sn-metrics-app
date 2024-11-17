@@ -2,7 +2,7 @@ import { AddableMetric, SnowQuality } from "common/interfaces";
 import { useState } from "react";
 
 interface NewMetricAdderProps {
-  onSubmit: (newMetric?: AddableMetric) => void;
+  onSubmit: (newMetric: AddableMetric) => Promise<void>;
 }
 
 export function NewMetricAdder(props: NewMetricAdderProps) {

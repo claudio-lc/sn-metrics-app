@@ -7,11 +7,11 @@ CREATE TABLE metrics (
     snow_quality snow_quality_type NOT NULL,
     occupation INT NOT NULL CHECK (occupation <= 100),
     wind_speed INT NOT NULL CHECK (wind_speed >= 0),
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 
-INSERT INTO metrics (snow_quality, occupation, wind_speed, created_at) VALUES
+INSERT INTO metrics (snow_quality, occupation, wind_speed, date) VALUES
 ('powder', 60, 15, '2024-01-08 12:00:00'),
 ('crust', 80, 25, '2024-01-09 12:00:00'),
 ('slush', 40, 10, '2024-01-10 12:00:00'),

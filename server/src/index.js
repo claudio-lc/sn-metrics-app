@@ -32,9 +32,9 @@ app.get("/api/getAllMetrics", (req, res, next) => __awaiter(void 0, void 0, void
 }));
 app.put("/api/addMetric", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { snowQuality, occupation, windSpeed } = req.body;
-        const result = yield pool_1.default.query("INSERT INTO metrics (snow_quality, occupation, wind_speed) VALUES ($1, $2, $3)", [snowQuality, occupation, windSpeed]);
-        res.send({ success: result.rowCount === 1 });
+        const { snowQuality, occupation, windSpeed, date } = req.body;
+        const result = yield pool_1.default.query("INSERT INTO metrics (snow_quality, occupation, wind_speed, date) VALUES ($1, $2, $3, $4) RETURNING id", [snowQuality.toLowerCase(), occupation, windSpeed, date]);
+        res.send({ id: result.rows[0].id });
     }
     catch (err) {
         next(err);

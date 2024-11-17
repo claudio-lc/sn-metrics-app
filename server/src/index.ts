@@ -1,6 +1,6 @@
 import express from "express";
 import pool from "./pool";
-import { Metric } from "common/interfaces";
+import { Metric, SnowQuality } from "common/interfaces";
 import cors from "cors";
 
 const app = express();
@@ -23,12 +23,12 @@ app.get("/api/getAllMetrics", async (req, res, next) => {
 
 app.put("/api/addMetric", async (req, res, next) => {
   try {
-    const { snowQuality, occupation, windSpeed }: Metric = req.body;
+    const { snowQuality, occupation, windSpeed, date }: Metric = req.body;
     const result = await pool.query(
-      "INSERT INTO metrics (snow_quality, occupation, wind_speed) VALUES ($1, $2, $3)",
-      [snowQuality, occupation, windSpeed]
+      "INSERT INTO metrics (snow_quality, occupation, wind_speed, date) VALUES ($1, $2, $3, $4) RETURNING id",
+      [snowQuality.toLowerCase(), occupation, windSpeed, date]
     );
-    res.send({ success: result.rowCount === 1 });
+    res.send({ id: result.rows[0].id });
   } catch (err) {
     next(err);
   }
