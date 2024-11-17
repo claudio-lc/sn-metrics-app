@@ -13,6 +13,8 @@ export interface Metric {
   date: Date;
 }
 
+export type AddableMetric = Omit<Metric, "id">;
+
 export enum MetricType {
   occupation = "Occupation",
   windSpeed = "Wind speed",

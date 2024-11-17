@@ -16,9 +16,16 @@ import {
   BarElement,
 } from "chart.js";
 import "chartjs-adapter-date-fns";
-import { Metric, MetricType, SnowQuality } from "common/interfaces";
+import {
+  AddableMetric,
+  Metric,
+  MetricType,
+  SnowQuality,
+} from "common/interfaces";
 import { Bar, Line } from "react-chartjs-2";
 import "../styles/MetricsContainer.css";
+import { NewMetricAdder } from "./NewMetricAdder";
+import { useEffect, useState } from "react";
 
 interface MetricsContainerProps {
   metrics: Metric[];
@@ -75,50 +82,77 @@ const options: ChartOptions<"line" | "bar"> = {
 };
 
 export function MetricsContainer(props: MetricsContainerProps) {
+  const [metrics, setMetrics] = useState<Metric[]>();
+
+  useEffect(() => {
+    setMetrics(props.metrics);
+  }, [props.metrics]);
+
   return (
-    <span className="metrics-container">
-      (
-      {Object.keys(MetricType).map((type) => {
-        if (type !== "snowQuality") {
-          return (
-            <Line
-              data={
-                transformLineMetricsData(
-                  props.metrics,
-                  MetricType[type as keyof typeof MetricType]
-                ) as ChartData<"line">
+    <>
+      {metrics && (
+        <>
+          <span className="metrics-container">
+            {Object.keys(MetricType).map((type) => {
+              if (type !== "snowQuality") {
+                return (
+                  <Line
+                    data={
+                      transformLineMetricsData(
+                        metrics,
+                        MetricType[type as keyof typeof MetricType]
+                      ) as ChartData<"line">
+                    }
+                    options={options}
+                    height={400}
+                    width={600}
+                    id={`metrics-chart-${type}`}
+                    className="metrics-chart"
+                  />
+                );
+              } else {
+                return (
+                  <Bar
+                    data={
+                      transformBarMetricsData(
+                        metrics,
+                        MetricType.snowQuality
+                      ) as unknown as ChartData<"bar">
+                    }
+                    options={{
+                      ...options,
+                      scales: { x: { type: "category" } },
+                    }}
+                    height={400}
+                    width={600}
+                    id={`metrics-chart-${type}`}
+                    className="metrics-chart"
+                  />
+                );
               }
-              options={options}
-              height={400}
-              width={600}
-              id={`metrics-chart-${type}`}
-              className="metrics-chart"
-            />
-          );
-        } else {
-          return (
-            <Bar
-              data={
-                transformBarMetricsData(
-                  props.metrics,
-                  MetricType.snowQuality
-                ) as unknown as ChartData<"bar">
-              }
-              options={{
-                ...options,
-                scales: { x: { type: "category" } },
+            })}
+          </span>
+          <span>
+            <NewMetricAdder
+              onSubmit={(newMetric) => {
+                if (newMetric) {
+                  handleSubmit(newMetric);
+                }
               }}
-              height={400}
-              width={600}
-              id={`metrics-chart-${type}`}
-              className="metrics-chart"
             />
-          );
-        }
-      })}
-      )
-    </span>
+          </span>
+        </>
+      )}
+    </>
   );
+
+  function handleSubmit(newMetric: AddableMetric) {
+    setMetrics((prevMetrics) => {
+      if (prevMetrics) {
+        return [...prevMetrics, { ...newMetric, id: "234234" }];
+      }
+    });
+  }
 }
 
 function transformLineMetricsData(metrics: Metric[], metricType: MetricType) {
