@@ -4,16 +4,28 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start-db": "docker-compose up -d",
+    "build": "npx tsc; npx tsc ../common/interfaces.ts",
+    "start": "npm run start-db; npm run build; node src/index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
     "@types/node": "^22.9.0",
+    "@types/pg": "^8.11.10",
     "dotenv": "^16.4.5",
+    "express": "^4.21.1",
     "node-postgres": "^0.6.2",
+    "pg": "^8.13.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.3"
+  },
+  "dependencies": {
+    "common": "file:../common",
+    "cors": "^2.8.5"
   }
 }
