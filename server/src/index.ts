@@ -34,16 +34,6 @@ app.put("/api/addMetric", async (req, res, next) => {
   }
 });
 
-app.delete("/api/deleteMetric", async (req, res, next) => {
-  try {
-    const { id } = req.body;
-    const result = await pool.query("DELETE FROM metrics WHERE id = $1", [id]);
-    res.send({ success: result.rowCount === 1 });
-  } catch (err) {
-    next(err);
-  }
-});
-
 // Global error handler middleware
 app.use(
   (
