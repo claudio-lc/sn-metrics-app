@@ -1,9 +1,4 @@
-import {
-  AddableMetric,
-  Metric,
-  MetricType,
-  SnowQuality,
-} from "common/interfaces";
+import { AddableMetric, Metric } from "common/interfaces";
 import "../styles/MetricsContainer.css";
 import { NewMetricAdder } from "./NewMetricAdder";
 import { useEffect, useState } from "react";
