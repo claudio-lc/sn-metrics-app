@@ -1,5 +1,8 @@
 import { AddableMetric, SnowQuality } from "common/interfaces";
 import { useState } from "react";
+import { validateValue } from "../utils/validation";
+import { parseDate } from "../utils/parsers";
+import "../styles/NewMetricAdder.css";
 
 interface NewMetricAdderProps {
   onSubmit: (newMetric: AddableMetric) => Promise<void>;
@@ -14,38 +17,34 @@ export function NewMetricAdder(props: NewMetricAdderProps) {
   });
 
   return (
-    <div>
+    <div className="form-container">
       <h2>Add new metric</h2>
       <form onSubmit={(e) => e.preventDefault()}>
         <label>
-          Date:
+          <h4>Date</h4>
           <input
             type="date"
             value={
               newMetric?.date
-                ? newMetric.date.toISOString().split("T")[0]
-                : new Date().toISOString().split("T")[0]
+                ? parseDate(newMetric.date)
+                : parseDate(new Date())
             }
             onChange={(e) => handleChange("date", new Date(e.target.value))}
           />
         </label>
         <label>
-          Snow quality:
+          <h4>Snow quality</h4>
           <select
             value={newMetric?.snowQuality}
             onChange={(e) =>
               handleChange("snowQuality", e.target.value as SnowQuality)
             }
           >
-            {Object.keys(SnowQuality).map((quality) => (
-              <option key={quality} value={quality}>
-                {SnowQuality[quality as keyof typeof SnowQuality]}
-              </option>
-            ))}
+            {renderSnowQualityOptions()}
           </select>
         </label>
         <label>
-          Occupation:
+          <h4>Occupation (%)</h4>
           <input
             type="number"
             value={newMetric?.occupation}
@@ -53,7 +52,7 @@ export function NewMetricAdder(props: NewMetricAdderProps) {
           />
         </label>
         <label>
-          Wind speed:
+          <h4>Wind speed (km/h)</h4>
           <input
             type="number"
             value={newMetric?.windSpeed}
@@ -69,11 +68,25 @@ export function NewMetricAdder(props: NewMetricAdderProps) {
     key: T,
     value: AddableMetric[T]
   ) {
+    const validatedValue = validateValue(key, value);
+
     setNewMetric((prevMetric: AddableMetric) => {
       return {
         ...prevMetric,
-        [key]: value,
+        [key]: validatedValue,
       };
     });
+  }
+
+  function renderSnowQualityOptions() {
+    return (
+      <>
+        {Object.keys(SnowQuality).map((quality) => (
+          <option key={quality} value={quality}>
+            {SnowQuality[quality as keyof typeof SnowQuality]}
+          </option>
+        ))}
+      </>
+    );
   }
 }
