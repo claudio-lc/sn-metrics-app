@@ -55,6 +55,10 @@ There are several folders, one for each purpose. The `App` component renders the
 
 CSS files have its own separate folder (`styles`), and inside `utils` we can find everything that can be reused or separated from the direct behaviour of the components (just like `graphOptions`, which was decided to be separated from the `MetricVisualiser` component for the sake of code readability).
 
+## The common folder
+
+Inside, there are the interfaces that are shared between the client and the server. This is a good practice to keep the code clean and avoid repetition inconsistencies. The `Metric` interface is the most important one, as it is the main data structure that the application uses. The Typescript code for the `interfaces` file is compiled in the `start` script of the backend.
+
 ## Result
 
 The application is able to display the metrics in a visually appealing way, with the use of `Chart.js` to display the data. The user can also add new metrics to the database, which will be displayed in the charts after the request is made. However, it doesn't show an average of the metrics. This could be more meaningful after the implementation of some date filtering, which could tell the user how good a winter season has been in terms of playing sports. Nevertheless, it was more appealing to include not one but three kinds of metrics, which give some realness to the purpose of the application.
