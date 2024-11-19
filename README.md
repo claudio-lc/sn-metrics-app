@@ -20,6 +20,18 @@ The application is built using Node.js, Express, and React, everything under Typ
    ```bash
    npm install
    ```
+4. **Create a `.env` file in the server directory**:
+   ```bash
+   touch .env
+   ```
+5. **Add the following environment variables to the `.env` file**:
+   ```bash
+   POSTGRES_USER=yourusername
+   POSTGRES_PASSWORD=yourpassword
+   POSTGRES_DB=sn-metrics-db
+   POSTGRES_HOST=127.0.0.1
+   POSTGRES_PORT=5433
+   ```
 
 ## Usage
 
